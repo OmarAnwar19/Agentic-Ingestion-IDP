@@ -45,10 +45,19 @@ Create a `.env` file:
 
 ```env
 USE_MOCK_DATA=true
-MOCK_EMAIL_FILE=brr_email_001.txt
-EXTRACTOR_MODEL=llama3.2
-VALIDATOR_MODEL=llama3.2
+MOCK_EMAIL_FILE_NAME=brr_email_002.txt
+BRR_EMAIL_SUBJECT_KEYWORD=BRR
+
+LLM_PROVIDER=groq # groq for deployment / ollama for local
+GROQ_API_KEY=your_groq_api_key_here
+
+EXTRACTOR_MODEL=llama-3.3-70b-versatile
+VALIDATOR_MODEL=llama-3.3-70b-versatile
 OLLAMA_BASE_URL=http://localhost:11434
+
+LANGFUSE_PUBLIC_KEY=your_public_key_here
+LANGFUSE_SECRET_KEY=your_secret_key_here
+LANGFUSE_HOST=https://cloud.langfuse.com
 ```
 
 ```bash

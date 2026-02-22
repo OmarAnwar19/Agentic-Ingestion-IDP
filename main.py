@@ -9,6 +9,7 @@ import streamlit as st
 from dotenv import load_dotenv
 
 from langgraph.types import Command
+from langfuse.langchain import CallbackHandler
 
 from graph import graph
 
@@ -16,9 +17,13 @@ from graph import graph
 
 load_dotenv()
 USE_MOCK_DATA = os.getenv("USE_MOCK_DATA", "true").lower() != "false"
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
+EXTRACTOR_MODEL = os.getenv("EXTRACTOR_MODEL", "llama-3.3-70b-versatile")
+VALIDATOR_MODEL = os.getenv("VALIDATOR_MODEL", "llama-3.3-70b-versatile")
+
     
 st.set_page_config(
-    page_title="BRR IDP",
+    page_title="Agentic Ingestion Pipeline Demo",
     layout="wide",
 )
 
@@ -47,7 +52,7 @@ with st.sidebar:
     st.session_state.thread_id = thread_id
     st.divider()
     st.markdown("**Models**")
-    st.code("Extractor: llama3.2\nValidator: llama3.2", language="text")
+    st.code(f"Extractor: {EXTRACTOR_MODEL}\nValidator: {VALIDATOR_MODEL}\nProvider:  {LLM_PROVIDER}", language="text")
     st.divider()
     st.markdown("**Pipeline**")
     st.markdown("""
@@ -64,7 +69,11 @@ with st.sidebar:
 
 def get_config() -> dict:
     """Return the LangGraph config dict for the current thread."""
-    return {"configurable": {"thread_id": st.session_state.thread_id}}
+    langfuse_handler = CallbackHandler()
+    return {
+        "configurable": {"thread_id": st.session_state.thread_id},
+        "callbacks": [langfuse_handler],
+    }
 
 def get_initial_state() -> dict:
     """Return a blank pipeline state."""

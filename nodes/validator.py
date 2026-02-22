@@ -7,22 +7,31 @@ import os
 from dotenv import load_dotenv
 from state import IDPGlobalState
 from langchain_ollama import ChatOllama
+from langchain_groq import ChatGroq
 from langchain_core.messages import SystemMessage, HumanMessage
 
 # === Environment config and model setup ===
 
 load_dotenv()
 
-VALIDATOR_MODEL = os.getenv("VALIDATOR_MODEL", "llama3.2")
-OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
+LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
+VALIDATOR_MODEL = os.getenv("VALIDATOR_MODEL", "llama-3.3-70b-versatile")
 
-llm = ChatOllama(
-    model=VALIDATOR_MODEL,
-    base_url=OLLAMA_BASE_URL,
-    temperature=0.3,
-    num_ctx=8192,
-    format="json",
-)
+if LLM_PROVIDER == "ollama":
+    llm = ChatOllama(
+        model=VALIDATOR_MODEL,
+        base_url=os.getenv("OLLAMA_BASE_URL", "http://localhost:11434"),
+        temperature=0.3,
+        num_ctx=8192,
+        format="json",
+    )
+else:
+    llm = ChatGroq(
+        model=VALIDATOR_MODEL,
+        temperature=0.3,
+        api_key=os.getenv("GROQ_API_KEY"),
+        model_kwargs={"response_format": {"type": "json_object"}},
+    )
 
 # === Prompts and templates ===
 
