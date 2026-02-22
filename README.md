@@ -2,9 +2,11 @@
 
 An agentic document processing pipeline built with LangGraph and Ollama. Reads emails, extracts structured fields using a local LLM, validates the output with a second LLM pass, and routes low-confidence results through a human-in-the-loop review step before generating a final report.
 
-**[Live Demo](https://agentic-ingestion-idp.streamlit.app/)**
+#### **[Live Deployment](https://agentic-ingestion-idp.streamlit.app/)**
+            
+#### **[Loom Demo](https://www.loom.com/share/cc559b6392104e6f8d95a5f22ca22bd3)**
 
-**[DEMO]("https://www.loom.com/share/cc559b6392104e6f8d95a5f22ca22bd3")**
+---
 
 ![Runtime view - No HITL](data/static/runtime-no-hitl.png)
 
