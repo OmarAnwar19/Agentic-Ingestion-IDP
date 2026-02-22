@@ -17,6 +17,9 @@ from graph import graph
 # === Page config ===
 
 load_dotenv()
+
+for key, value in st.secrets.items():
+    os.environ.setdefault(key, str(value))
 USE_MOCK_DATA = os.getenv("USE_MOCK_DATA", "true").lower() != "false"
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "groq")
 EXTRACTOR_MODEL = os.getenv("EXTRACTOR_MODEL", "llama-3.3-70b-versatile")
