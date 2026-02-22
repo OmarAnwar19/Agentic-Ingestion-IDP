@@ -2,7 +2,7 @@
 State management for the BRR IDP pipeline, including shared data structures and types.
 """
 
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal, Optional, TypedDict
 
 class IDPGlobalState(TypedDict):
     """Global state shared across the entire pipeline."""
@@ -14,3 +14,4 @@ class IDPGlobalState(TypedDict):
     hitl_corrections: list[dict[str, Any]]
     final_output: dict[Literal["brr", "summary", "decision", "metadata"], Any]
     needs_review: bool
+    mock_email_file: Optional[str]

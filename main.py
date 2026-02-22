@@ -3,6 +3,7 @@ Streamlit UI for the BRR IDP pipeline.
 Run with: streamlit run main.py
 """
 
+from datetime import datetime
 import json
 import os
 import streamlit as st
@@ -28,7 +29,7 @@ st.set_page_config(
 )
 
 st.title("Agentic Ingestion Pipeline")
-st.info("Demo showcasing a human-in-the-loop BRR Intelligent Document Processor built with LangGraph. This would be expanded with more features and a polished UI in production, but serves as a functional prototype for the core pipeline and HITL flow.")
+st.info("Demo of a human-in-the-loop document processing pipeline built with LangGraph. Extracts structured fields from emails, validates confidence, and routes low-confidence results for human review before generating a final report. Select a mock email from the sidebar to test both the clean and HITL paths.")
 
 # === Session state ===
 
@@ -44,10 +45,22 @@ if "stage" not in st.session_state:
 if "graph_output" not in st.session_state:
     st.session_state.graph_output = None
 
+if "mock_email_file" not in st.session_state:
+    st.session_state.mock_email_file = "brr_email_001.txt"
+
 # === Sidebar ===
 
 with st.sidebar:
     st.header("Config")
+    st.divider()
+    st.markdown("**Mock Email**")
+    mock_file = st.selectbox(
+        "mock_file",
+        options=["brr_email_001.txt", "brr_email_002.txt"],
+        format_func=lambda x: "Email 1 - clean (no HITL)" if x == "brr_email_001.txt" else "Email 2 - vague (triggers HITL)",
+        label_visibility="collapsed",
+    )
+    st.session_state.mock_email_file = mock_file
     thread_id = st.text_input("Thread ID", value=st.session_state.thread_id)
     st.session_state.thread_id = thread_id
     st.divider()
@@ -86,6 +99,7 @@ def get_initial_state() -> dict:
         "hitl_corrections": {},
         "final_output": {},
         "needs_review": False,
+        "mock_email_file": st.session_state.get("mock_email_file", "brr_email_001.txt"),
     }
 
 # === Stage: idle ===
@@ -229,10 +243,11 @@ elif st.session_state.stage == "done":
     if pdf_path:
         try:
             with open(pdf_path, "rb") as f:
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 st.download_button(
                     label="Download BRR as PDF",
                     data=f,
-                    file_name="BRR_output.pdf",
+                    file_name=f"BRR_{timestamp}.pdf",
                     mime="application/pdf",
                     use_container_width=True,
                     type="primary",

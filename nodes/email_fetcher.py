@@ -17,17 +17,20 @@ load_dotenv()
 USE_MOCK_DATA = os.getenv("USE_MOCK_DATA", "true").lower() != "false"
 BRR_SUBJECT_KEYWORD = os.getenv("BRR_EMAIL_SUBJECT_KEYWORD", "BRR")
 
-MOCK_EMAIL_FILE_NAME = os.getenv("MOCK_EMAIL_FILE_NAME", "brr_email_001.txt")
-MOCK_EMAIL_PATH = Path(__file__).parent.parent / "data" / "mock_emails" / MOCK_EMAIL_FILE_NAME
+MOCK_DATA_DIR = Path(__file__).parent.parent / "data" / "mock_emails"
+DEFAULT_MOCK_FILE = os.getenv("MOCK_EMAIL_FILE_NAME", "brr_email_001.txt")
+
 
 # === Helper functions ===
-def load_mock_email() -> str:
+
+def load_mock_email(filename: str) -> str:
     """Load mock email text from disk."""
-    if not MOCK_EMAIL_PATH.exists():
-        raise FileNotFoundError(f"Mock email not found at: {MOCK_EMAIL_PATH}")
-    with open(MOCK_EMAIL_PATH, "r", encoding="utf-8") as f:
+    path = MOCK_DATA_DIR / filename
+    if not path.exists():
+        raise FileNotFoundError(f"Mock email not found at: {path}")
+    with open(path, "r", encoding="utf-8") as f:
         content = f.read()
-    print(f"Loaded mock email from {MOCK_EMAIL_PATH}")
+    print(f"Loaded mock email: {filename}")
     return content
 
 # === Fetch email function ===
@@ -40,7 +43,8 @@ def email_fetcher_node(state: IDPGlobalState) -> dict:
     print("[ Node: email_fetcher ]")
 
     if USE_MOCK_DATA:
-        raw_text = load_mock_email()
+        filename = state.get("mock_email_file") or DEFAULT_MOCK_FILE
+        raw_text = load_mock_email(filename)
         return {"raw_email_text": raw_text}
 
     toolkit = GmailToolkit()

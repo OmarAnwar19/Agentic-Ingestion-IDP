@@ -53,8 +53,7 @@ Score HIGH (80+) ONLY if every field is explicitly and clearly supported by the 
 Respond ONLY with a JSON object with this exact structure:
 {
     "confidence_score": <integer 0-100>,
-    "issues": [<list of strings describing specific problems found>],
-    "needs_review": <true if confidence_score < 80, false otherwise>
+    "issues": [<list of strings describing specific problems found>]
 }
 """
 
@@ -104,7 +103,7 @@ def validator_node(state: IDPGlobalState) -> dict:
         result = json.loads(response.content)
 
         confidence = float(result.get("confidence_score", 0))
-        needs_review = result.get("needs_review", confidence < 80)
+        needs_review = confidence < 80
         issues = result.get("issues", [])
 
         print(f"Validation complete. Confidence: {confidence}%")
