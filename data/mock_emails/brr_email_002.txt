@@ -1,0 +1,25 @@
+From: m.chen@company.com
+To: review-board@company.com
+Subject: BRR - Project Delta
+
+Hi,
+
+Sending over the BRR for Delta as requested. Things are mostly okay I think.
+
+We got some approvals but not sure if all of them came through - James said he was fine with it,
+and I believe the security team was also looped in at some point last week. Not sure if Lisa
+actually signed off or if she just said she would.
+
+There were a few risks raised in the last meeting. One had to do with the deployment window and
+something about the database. Can't remember the exact details, someone else was taking notes.
+There might also be something related to the auth service but that was marked as low priority.
+
+Testing: some tests were run. Most passed. A few failures were noted but the team said they were
+probably fine. No formal report was written up yet.
+
+The go/no-go call was discussed but we didn't fully land on a decision by the end of the meeting.
+There was a lean toward proceeding but there were also voices saying we should wait.
+
+Let me know if you need anything else.
+
+Mike
